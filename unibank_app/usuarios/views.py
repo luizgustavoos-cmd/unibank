@@ -12,6 +12,7 @@ def cadastro(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         senha = request.POST.get('senha')
+        # telefone = request.POST.get('telefone')
 
         email = User.objects.filter(email=email).first()
 

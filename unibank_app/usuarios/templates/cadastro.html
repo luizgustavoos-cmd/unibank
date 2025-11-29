@@ -1,25 +1,45 @@
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-    <head>
+<head>
+    <title>Cadastro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/usuarios/css/cadastro.css">
+</head>
 
-    </head>
+<body>
 
-    <body>
+    <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
 
-        <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
+        <h2 class="titulo-cadastro">Uni Bank</h2>
 
-            <input type="text" placeholder="Nome de usuário..." name='username' />
-            <br>
-            <input type="email" placeholder="Email..." name='email' />
-            <br>
-            <input type="password" placeholder="Senha..." name='senha' />
-            <br>
-            <br>
-            <button type="submit">Cadastrar</button>
+        <input type="text" placeholder="Nome de usuário..." name='username' />
+        
+        <input type="email" placeholder="Email..." name='email' />
 
-        </form>
+        <div class="input-senha-container">
+            <input id="senha" type="password" placeholder="Senha..." name="senha">
+            <span class="ver-senha" onclick="toggleSenha()">👁</span>
+        </div>
 
-    </body>
+        <button type="submit">Cadastrar</button>
+
+        <p class="login-texto">
+            Já faz parte da nossa comunidade?
+            <a href="{% url 'login' %}">Logar</a>
+        </p>
+
+    </form>
+
+    <script>
+        function toggleSenha() {
+            let campo = document.getElementById("senha");
+            campo.type = campo.type === "password" ? "text" : "password";
+        }
+    </script>
+
+</body>
 
 
 </html
