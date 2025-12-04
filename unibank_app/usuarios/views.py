@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import CadastroForm 
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login,update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from .forms import LoginForm 
 from django.contrib.auth import logout
+
 
 
 
@@ -124,4 +125,82 @@ def custom_logout_view(request):
     # Certifique-se de que sua URL de login tenha o nome 'login'
     return redirect('login')
 
+# usuarios/views.py (Adicione esta nova importação, se ainda não tiver)
+from django.contrib.auth import update_session_auth_hash 
+
+# ... (outras views) ...
+
+@login_required
+@user_passes_test(is_admin, login_url='/auth/home_page/')
+def adm_editar_usuario(request, user_id):
+    try:
+        user_to_edit = User.objects.get(pk=user_id)
+        profile_to_edit = user_to_edit.profile
+    except User.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+        return redirect('adm_inicio')
+
+    if request.method == 'POST':
+        # Assumindo que os dados vieram do modal com nomes de campo específicos
+        username_novo = request.POST.get('username')
+        email_novo = request.POST.get('email')
+        telefone_novo = request.POST.get('telefone')
+        saldo_novo = request.POST.get('saldo') # Novo campo
+        senha_nova = request.POST.get('senha')
+        
+        # 1. Atualizar User
+        user_to_edit.username = username_novo
+        user_to_edit.email = email_novo
+        
+        # 2. Atualizar Senha (somente se uma nova senha for fornecida)
+        if senha_nova:
+            user_to_edit.set_password(senha_nova)
+            # Se o admin edita a si mesmo, a sessão deve ser atualizada para evitar logout
+            if user_to_edit == request.user:
+                update_session_auth_hash(request, user_to_edit)
+                
+        user_to_edit.save()
+        
+        # 3. Atualizar Profile
+        profile_to_edit.telefone = telefone_novo
+        
+        # Garante que o saldo seja tratado como float
+        try:
+            profile_to_edit.saldo = float(saldo_novo)
+        except (ValueError, TypeError):
+            # Tratar erro de saldo inválido, se necessário
+            pass
+
+        profile_to_edit.save()
+        
+        messages.success(request, f"Usuário {username_novo} atualizado com sucesso!")
+        return redirect('adm_inicio')
+
+    # Para GET, esta view não é usada (o modal é preenchido via JS/AJAX ou dados iniciais)
+    # Mas é bom mantê-la como uma função de POST/redirect
+    messages.error(request, "Acesso inválido.")
+    return redirect('adm_inicio')
+
+
+@login_required
+@user_passes_test(is_admin, login_url='/auth/home_page/')
+def adm_excluir_usuario(request, user_id):
+    try:
+        user_to_delete = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+        return redirect('adm_inicio')
+    
+    if user_to_delete == request.user:
+        messages.error(request, "Você não pode excluir a sua própria conta de administrador.")
+        return redirect('adm_inicio')
+
+    if request.method == 'POST':
+        username = user_to_delete.username
+        user_to_delete.delete()
+        messages.success(request, f"Usuário '{username}' excluído permanentemente.")
+        return redirect('adm_inicio')
+
+    messages.error(request, "Acesso inválido.")
+    return redirect('adm_inicio')
 

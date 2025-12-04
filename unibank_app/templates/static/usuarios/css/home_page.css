@@ -5,7 +5,9 @@ body {
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     /* Evita que o conteúdo role por trás do botão fixo */
-    padding-top: 60px; 
+    padding-top: 60px;
+    /* Adiciona altura mínima para o modal centralizar corretamente */
+    min-height: 100vh; 
 }
 
 /* Container Principal da Tabela */
@@ -72,7 +74,7 @@ body {
     text-align: center;
 }
 
-/* === BOTÃO DE SAÍDA FIXO NO CANTO SUPERIOR DIREITO === */
+/* Botão de Logout fixo no topo direito */
 
 .top-right-container {
     position: fixed;
@@ -112,9 +114,7 @@ body {
 }
 
 
-/* ================================================= */
-/* === ESTILOS DE MENSAGENS POP-UP (COPIADOS DO LOGIN.CSS) === */
-/* ================================================= */
+/*popups mensagens*/
 
 /* Container para posicionar as mensagens no topo */
 .mensagens-container {
@@ -150,4 +150,163 @@ body {
     background: #ffcc00; /* Amarelo da sua paleta */
     color: #000; /* Texto preto */
     border: 1px solid #e0b200;
+}
+/*botões*/
+.coluna-acoes {
+    white-space: nowrap; /* Mantém os botões na mesma linha */
+    display: flex;       /* Melhor para alinhamento */
+    gap: 8px;            /* Espaçamento entre os botões */
+    align-items: center;
+}
+
+.btn-acao-editar, 
+.btn-acao-excluir {
+    padding: 6px 10px;
+    margin-right:5px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-acao-editar {
+    background: #007bff; /* Azul */
+    color: #fff;
+}
+
+.btn-acao-editar:hover {
+    background: #0056b3;
+}
+
+.btn-acao-excluir {
+    background: #dc3545; /* Vermelho (perigo) */
+    color: #fff;
+}
+
+.btn-acao-excluir:hover {
+    background: #c82333;
+}
+/*modais*/
+.modal-bg {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    z-index: 1050; /* Acima de tudo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente escuro */
+    display: none; /* Mantém como 'none' para o JS mudar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+}
+
+.modal-content {
+    /* ❌ REMOVIDO: display:block; (é o padrão) */
+    background-color: #1a1a1a;
+    /* ❌ REMOVIDO: margin: 10% auto; (o flexbox faz isso melhor) */
+    padding: 30px;
+    border: 1px solid #333;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    animation: fadeInModal 0.3s;
+    position: relative;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.titulo-modal {
+    color: #FFD700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    color: #ccc;
+    font-weight: 600;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="number"],
+.modal-content input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #555;
+    background: #0d0d0d;
+    color: #fff;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Botões do Modal */
+.btn-salvar {
+    width: 100%;
+    margin-top: 25px;
+    padding: 12px;
+    background: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-salvar:hover {
+    background: #45a049;
+}
+
+.aviso-exclusao {
+    color: #dc3545; /* Vermelho */
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.btn-confirmar-exclusao, .btn-cancelar {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-confirmar-exclusao {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-cancelar {
+    background: #555;
+    color: #fff;
+}
+
+/* Animação */
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }

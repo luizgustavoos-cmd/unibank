@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADM - Lista de Usuários</title>
     <link rel="stylesheet" href="{% static 'usuarios/css/home_page.css' %}">
-    
 </head>
 <body>
     {% if messages %}
@@ -34,6 +33,7 @@
                     <th>Telefone</th>
                     <th>Saldo (R$)</th>
                     <th>Cadastro em</th>
+                    <th>Ações</th> 
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +45,30 @@
                     <td>{{ perfil.telefone }}</td>
                     <td class="saldo-valor">R$ {{ perfil.saldo|floatformat:2 }}</td>
                     <td>{{ perfil.user.date_joined|date:"d/m/Y H:i" }}</td>
-                </tr>
+                    
+                    <td class="coluna-acoes">
+                        <button type="button" 
+                                class="btn-acao-editar" 
+                                onclick="abrirModalEdicao(
+                                    '{{ perfil.user.pk }}', 
+                                    '{{ perfil.user.username }}', 
+                                    '{{ perfil.user.email }}', 
+                                    '{{ perfil.telefone }}', 
+                                    '{{ perfil.saldo|floatformat:2 }}'
+                                )">
+                            Editar
+                        </button>
+                        
+                        <button type="button" 
+                                class="btn-acao-excluir" 
+                                onclick="abrirModalExclusao(
+                                    '{{ perfil.user.pk }}', 
+                                    '{{ perfil.user.username }}'
+                                )">
+                            Excluir
+                        </button>
+                    </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -58,24 +81,113 @@
         </div>
 
     </div>
+    
+    <div id="modalEdicao" class="modal-bg">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalEdicao')">&times;</span>
+            <h3 class="titulo-modal">Editar Usuário: <span id="modalUsername"></span></h3>
+            <form id="formEdicao" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" id="editUserId">
+                
+                <label for="inputUsername">Nome de Usuário:</label>
+                <input type="text" id="inputUsername" name="username" required>
+
+                <label for="inputEmail">Email:</label>
+                <input type="email" id="inputEmail" name="email" required>
+                
+                <label for="inputTelefone">Telefone:</label>
+                <input type="text" id="inputTelefone" name="telefone" required>
+                
+                <label for="inputSaldo">Saldo (R$):</label>
+                <input type="number" step="0.01" id="inputSaldo" name="saldo" required>
+                
+                <label for="inputSenhaNova">Nova Senha (Opcional):</label>
+                <input type="password" id="inputSenhaNova" name="senha">
+
+                <button type="submit" class="btn-salvar">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalExclusao" class="modal-bg">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal('modalExclusao')">&times;</span>
+            <h3 class="titulo-modal aviso-exclusao">Confirmação de Exclusão</h3>
+            <p>Você tem certeza que deseja **excluir permanentemente** o usuário <strong id="confirmUsername"></strong>?</p>
+            <p class="aviso-exclusao">Esta ação é **irreversível** e deletará todos os dados associados a esta conta.</p>
+            
+            <form id="formExclusao" method="POST" style="margin-top: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" id="deleteUserId">
+                <button type="submit" class="btn-confirmar-exclusao">Excluir Permanentemente</button>
+            </form>
+            
+            <button type="button" class="btn-cancelar" onclick="fecharModal('modalExclusao')">Cancelar</button>
+        </div>
+    </div>
     <script>
+        const urlBaseEdicao = "{% url 'adm_editar_usuario' user_id=0 %}".slice(0, -2); // Remove o '0/' final
+        const urlBaseExclusao = "{% url 'adm_excluir_usuario' user_id=0 %}".slice(0, -2); // Remove o '0/' final
+
+        // Função Genérica para fechar modal
+        function fecharModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // 1. Funcionalidades do Modal de EDIÇÃO
+        function abrirModalEdicao(id, username, email, telefone, saldo) {
+            const modal = document.getElementById('modalEdicao');
+            
+            // Preencher os campos do formulário
+            document.getElementById('editUserId').value = id;
+            document.getElementById('modalUsername').textContent = username;
+            document.getElementById('inputUsername').value = username;
+            document.getElementById('inputEmail').value = email;
+            document.getElementById('inputTelefone').value = telefone;
+            document.getElementById('inputSaldo').value = saldo.replace(',', '.'); 
+
+            // Define a URL de ação do formulário
+            document.getElementById('formEdicao').action = urlBaseEdicao + id + '/';
+            
+            // Exibe o modal
+            modal.style.display = 'flex';
+        }
+
+        // 2. Funcionalidades do Modal de EXCLUSÃO
+        function abrirModalExclusao(id, username) {
+            const modal = document.getElementById('modalExclusao');
+            
+            // Preenche o nome do usuário na mensagem de confirmação
+            document.getElementById('confirmUsername').textContent = username;
+            
+            // Define a URL de ação do formulário
+            document.getElementById('formExclusao').action = urlBaseExclusao + id + '/';
+            
+            // Exibe o modal
+            modal.style.display = 'flex';
+        }
+
+        // 3. Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-bg')) {
+                event.target.style.display = 'none';
+            }
+        }   
+        
+        // 4. Script de auto-fechamento de mensagens
         document.addEventListener('DOMContentLoaded', () => {
             const mensagens = document.querySelectorAll('.mensagem-popup');
             
             mensagens.forEach(mensagem => {
-                // 1. Auto-fechamento após 5 segundos
                 setTimeout(() => {
                     mensagem.style.opacity = '0'; 
-                    
-                    // Remove o elemento após a transição terminar (500ms)
                     setTimeout(() => {
                         mensagem.remove();
                     }, 500); 
-                }, 5000); // 5000ms = 5 segundos
-                
-                // 2. Fechamento ao clicar na mensagem (já definido com onclick="this.remove()" no HTML)
+                }, 5000); 
             });
         });
     </script>
-</body>
+    </body>
 </html>
