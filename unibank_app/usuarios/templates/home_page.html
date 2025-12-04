@@ -1,45 +1,150 @@
 {% load static %}
+{% load l10n %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>cliente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início | Minha Conta</title>
     <link rel="stylesheet" href="{% static 'usuarios/css/home_page.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-
     
-{% if messages %}
-    <div class="mensagens-container">
-        {% for message in messages %}
-            <div class="mensagem-popup {{ message.tags }}" onclick="this.remove()"> 
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-    <h1>Bem-vindo à Tela cliente</h1>
-
-    <div class="top-right-container">
-            <a href="{% url 'logout' %}" class="btn-logout">Sair (Logout)</a>
+    {% if messages %}
+        <div class="mensagens-container">
+            {% for message in messages %}
+                <div class="mensagem-popup {{ message.tags }}" onclick="this.remove()"> 
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
+    {% endif %}
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="user-info-area">
+                <div class="profile-circle">
+                    {% with username=user.username|default:"Cliente" %}
+                        {{ username|slice:"0:1"|upper }}{{ username|slice:"1:2"|upper }}
+                    {% endwith %}
+                </div>
+                <div class="user-greeting">
+                    <p class="greeting-text">Olá,</p>
+                    <p class="user-name">{{ user.username|default:"Cliente" }}</p>
+                </div>
+            </div>
+
+            <a href="{% url 'logout' %}" class="btn-logout-cliente" title="Sair da Conta">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </header>
+
+        <section class="balance-section">
+            <p class="balance-label">Seu Saldo Atual</p>
+            <div class="balance-display">
+                <span class="currency-symbol">R$</span>
+                <span id="currentBalance" class="balance-value">
+                    {{ user.profile.saldo|default:"0.00"|floatformat:2|localize }}
+                </span>
+                <span id="maskedBalance" class="balance-value masked-value" style="display: none;">
+                    R$ •••••••
+                </span>
+                
+                <button id="toggleBalance" class="toggle-balance-btn">
+                    <i id="eyeIcon" class="fas fa-eye"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="actions-section">
+            <h2>Ações Rápidas</h2>
+            <div class="action-grid">
+                <div class="action-item">
+                    <i class="fas fa-arrow-up action-icon"></i>
+                    <p>Transferir</p>
+                </div>
+                <div class="action-item">
+                    <i class="fas fa-barcode action-icon"></i>
+                    <p>Pagar</p>
+                </div>
+                <div class="action-item">
+                    <i class="fas fa-file-invoice action-icon"></i>
+                    <p>Extrato</p>
+                </div>
+                <div class="action-item">
+                    <i class="fas fa-piggy-bank action-icon"></i>
+                    <p>Investir</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="transactions-section">
+            <h2>Últimas Atividades</h2>
+            <div class="transaction-item">
+                <div class="transaction-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="transaction-details">
+                    <p class="transaction-name">Pagamento Loja X</p>
+                    <p class="transaction-date">Hoje, 10:30</p>
+                </div>
+                <p class="transaction-amount expense">- R$ 55,00</p>
+            </div>
+            
+            <div class="transaction-item">
+                <div class="transaction-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="transaction-details">
+                    <p class="transaction-name">Transferência Recebida</p>
+                    <p class="transaction-date">Ontem, 18:45</p>
+                </div>
+                <p class="transaction-amount income">+ R$ 250,00</p>
+            </div>
+            
+            <a href="#" class="view-all-link">Ver todas as transações</a>
+        </section>
+
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('toggleBalance');
+            const balanceValue = document.getElementById('currentBalance');
+            const maskedBalance = document.getElementById('maskedBalance');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+           
+
+            toggleButton.addEventListener('click', () => {
+                if (balanceValue.style.display === 'none') {
+                    // Mostrar o saldo
+                    balanceValue.style.display = 'inline';
+                    maskedBalance.style.display = 'none';
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
+                } else {
+                    // Esconder o saldo
+                    balanceValue.style.display = 'none';
+                    maskedBalance.style.display = 'inline';
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                }
+            });
+            
+            // Script para auto-fechamento de mensagens
             const mensagens = document.querySelectorAll('.mensagem-popup');
             
             mensagens.forEach(mensagem => {
-                // 1. Auto-fechamento após 5 segundos
                 setTimeout(() => {
                     mensagem.style.opacity = '0'; 
-                    
-                    // Remove o elemento após a transição terminar (500ms)
                     setTimeout(() => {
                         mensagem.remove();
                     }, 500); 
-                }, 5000); // 5000ms = 5 segundos
-                
-                // 2. Fechamento ao clicar na mensagem (já definido com onclick="this.remove()" no HTML)
+                }, 5000); 
             });
         });
     </script>

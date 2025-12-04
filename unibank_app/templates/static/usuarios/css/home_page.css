@@ -310,3 +310,240 @@ body {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
 }
+
+/* ================================================= */
+/* === ESTILOS DA HOME PAGE (APP) === */
+/* ================================================= */
+
+body {
+    /* Garante que o fundo seja escuro e preencha a tela */
+    min-height: 100vh;
+    padding-top: 20px;
+    padding-bottom: 50px; /* Espaço para rolagem */
+}
+
+.app-container {
+    width: 95%;
+    max-width: 600px; /* Visual de celular/app */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* -------------------- HEADER -------------------- */
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 30px;
+}
+
+.user-info-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #FFD700; /* Dourado */
+    color: #0d0d0d; /* Texto escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.user-greeting {
+    line-height: 1.2;
+}
+
+.greeting-text {
+    font-size: 0.9em;
+    color: #aaa;
+    margin: 0;
+}
+
+.user-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.btn-logout-cliente {
+    font-size: 1.5em;
+    color: #FFD700; /* Ícone Dourado */
+    transition: color 0.2s;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.btn-logout-cliente:hover {
+    color: #e0b200;
+}
+
+/* -------------------- SEÇÃO DE SALDO -------------------- */
+
+.balance-section {
+    background: #1f1f1f;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.balance-label {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.balance-display {
+    display: flex;
+    align-items: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #66ff66; /* Verde Neon para Saldo */
+}
+
+.currency-symbol {
+    font-size: 0.8em;
+    margin-right: 5px;
+    color: #66ff66;
+}
+
+.masked-value {
+    font-size: 1em;
+}
+
+.toggle-balance-btn {
+    background: none;
+    border: none;
+    color: #FFD700;
+    font-size: 1em;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.toggle-balance-btn:hover {
+    color: #e0b200;
+}
+
+/* -------------------- AÇÕES RÁPIDAS (Grid) -------------------- */
+
+.actions-section h2, .transactions-section h2 {
+    color: #fff;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.action-item {
+    background: #1a1a1a;
+    padding: 15px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action-item:hover {
+    background: #2c2c2c;
+}
+
+.action-icon {
+    font-size: 1.5em;
+    color: #FFD700;
+    margin-bottom: 8px;
+}
+
+.action-item p {
+    font-size: 0.8em;
+    color: #ccc;
+    margin: 0;
+}
+
+/* -------------------- TRANSAÇÕES -------------------- */
+
+.transactions-section {
+    margin-top: 20px;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+}
+
+.transaction-icon {
+    background: #2c2c2c;
+    color: #FFD700;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    margin-right: 15px;
+}
+
+.transaction-details {
+    flex-grow: 1;
+}
+
+.transaction-name {
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.transaction-date {
+    font-size: 0.8em;
+    color: #aaa;
+    margin: 0;
+}
+
+.transaction-amount {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.expense {
+    color: #dc3545; /* Vermelho para gastos */
+}
+
+.income {
+    color: #66ff66; /* Verde para receitas */
+}
+
+.view-all-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #FFD700;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: #fff;
+}
