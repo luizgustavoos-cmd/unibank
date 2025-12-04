@@ -1,45 +1,110 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <title>Cadastro</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/usuarios/css/cadastro.css">
+  <title>Cadastro</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'usuarios/css/cadastro.css' %}">
 </head>
 
 <body>
 
-    <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
+{% if messages %}
+    <div class="mensagens-container">
+        {% for message in messages %}
+            <div class="mensagem-popup {{ message.tags }}" onclick="this.remove()">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-        <h2 class="titulo-cadastro">Uni Bank</h2>
 
-        <input type="text" placeholder="Nome de usuário..." name='username' />
+    
+  <form action="{% url 'cadastro' %}" method="POST"> {% csrf_token %}
+
+    <h2 class="titulo-cadastro">Uni Bank</h2>
         
-        <input type="email" placeholder="Email..." name='email' />
+        {{ form.username }}
+        {% for error in form.username.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
+        
+        {{ form.email }}
+        {% for error in form.email.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
+        
+        {{ form.telefone }}
+        {% for error in form.telefone.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
 
-        <div class="input-senha-container">
-            <input id="senha" type="password" placeholder="Senha..." name="senha">
-            <span class="ver-senha" onclick="toggleSenha()">👁</span>
-        </div>
+            <div class="input-senha-container">
+                  {{ form.senha }}
+      <span class="ver-senha" onclick="toggleSenha()">👁</span>
+    </div>
+        {% for error in form.senha.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
 
-        <button type="submit">Cadastrar</button>
+            <div class="input-senha-container">
+                  {{ form.senha_confirmacao }}
+      <span class="ver-senha" onclick="toggleConfirmacaoSenha()">👁</span>
+    </div>
+        {% for error in form.senha_confirmacao.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
 
-        <p class="login-texto">
-            Já faz parte da nossa comunidade?
-            <a href="{% url 'login' %}">Logar</a>
-        </p>
 
-    </form>
+    <button type="submit">Cadastrar</button>
 
-    <script>
-        function toggleSenha() {
-            let campo = document.getElementById("senha");
-            campo.type = campo.type === "password" ? "text" : "password";
-        }
-    </script>
+    <p class="login-texto">
+      Já faz parte da nossa comunidade?
+      <a href="{% url 'login' %}">Logar</a>
+    </p>
+
+  </form>
+
+  <script>
+        // 1. Alterna o campo Senha
+    function toggleSenha() {
+      let campo = document.getElementById("senha");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+
+        // 2. Novo: Alterna o campo Confirmação de Senha
+        function toggleConfirmacaoSenha() {
+      let campo = document.getElementById("confirmacao_senha");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+
+    // CÓDIGO DE GERENCIAMENTO DE MENSAGENS POP-UP
+    document.addEventListener('DOMContentLoaded', () => {
+      const mensagens = document.querySelectorAll('.mensagem-popup');
+      
+      mensagens.forEach(mensagem => {
+        // 1. Auto-fechamento após 5 segundos
+        setTimeout(() => {
+          mensagem.style.opacity = '0'; 
+          setTimeout(() => {
+            mensagem.remove();
+          }, 500); 
+        }, 5000); 
+
+        // 2. Fechamento ao clicar na mensagem
+        mensagem.addEventListener('click', () => {
+          mensagem.style.opacity = '0';
+          setTimeout(() => {
+            mensagem.remove();
+          }, 500);
+        });
+      });
+    });
+  </script>
+  
 
 </body>
-
-
-</html
+</html>

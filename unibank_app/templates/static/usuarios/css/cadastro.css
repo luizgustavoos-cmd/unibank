@@ -1,3 +1,11 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
 /* Fundo */
 body {
     margin: 0;
@@ -17,8 +25,6 @@ form {
     padding: 40px 50px;
     border-radius: 15px;
     width: 330px;
-
-    /* Glow suave */
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
 }
 
@@ -83,12 +89,10 @@ button {
     display: block;
     font-weight: bold;
     cursor: pointer;
-
     background: #ffcc00;
     color: #000;
     border: none;
     border-radius: 8px;
-
     transition: 0.2s;
 }
 
@@ -112,4 +116,55 @@ button:hover {
 
 .login-texto a:hover {
     text-decoration: underline;
+}
+
+/* === ESTILOS DE MENSAGENS POP-UP (Unificado) === */
+
+/* Container para posicionar as mensagens no topo */
+.mensagens-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 90%;
+    width: auto;
+}
+
+/* Estilo Base do Popup */
+.mensagem-popup {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Estilo para TODAS as Mensagens (SUCESSO, ERRO, WARNING) */
+.mensagem-popup.success, 
+.mensagem-popup.error,
+.mensagem-popup.warning,
+.mensagem-popup.info {
+    background: #ffcc00; /* Amarelo da sua paleta */
+    color: #000; /* Texto preto */
+    border: 1px solid #e0b200;
+}
+
+/* Estilo para mensagens de erro do formulário */
+.mensagem-erro {
+    color: #ffcc00;
+    font-size: 13px;
+    margin: 5px 0 10px 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Garante que os inputs com erro tenham um destaque */
+input.is-invalid {
+    border-color: #ffcc00 !important;
 }

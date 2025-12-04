@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADM - Lista de Usuários</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/home_page.css' %}">
+    
+</head>
+<body>
+    {% if messages %}
+        <div class="mensagens-container">
+            {% for message in messages %}
+                <div class="mensagem-popup {{ message.tags }}" onclick="this.remove()"> 
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="container-listagem">
+        <h1 class="titulo-listagem">Gerenciamento de Usuários</h1>
+
+        {% if perfis %}
+        <p>Total de perfis cadastrados: {{ perfis|length }}</p>
+
+        <table class="tabela-dados">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome de Usuário</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Saldo (R$)</th>
+                    <th>Cadastro em</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for perfil in perfis %}
+                <tr>
+                    <td>{{ perfil.user.pk }}</td>
+                    <td>{{ perfil.user.username }}</td>
+                    <td>{{ perfil.user.email }}</td>
+                    <td>{{ perfil.telefone }}</td>
+                    <td class="saldo-valor">R$ {{ perfil.saldo|floatformat:2 }}</td>
+                    <td>{{ perfil.user.date_joined|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="mensagem-vazia">Nenhum perfil de usuário encontrado no banco de dados.</p>
+        {% endif %}
+
+        <div class="top-right-container">
+            <a href="{% url 'logout' %}" class="btn-logout">Sair (Logout)</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mensagens = document.querySelectorAll('.mensagem-popup');
+            
+            mensagens.forEach(mensagem => {
+                // 1. Auto-fechamento após 5 segundos
+                setTimeout(() => {
+                    mensagem.style.opacity = '0'; 
+                    
+                    // Remove o elemento após a transição terminar (500ms)
+                    setTimeout(() => {
+                        mensagem.remove();
+                    }, 500); 
+                }, 5000); // 5000ms = 5 segundos
+                
+                // 2. Fechamento ao clicar na mensagem (já definido com onclick="this.remove()" no HTML)
+            });
+        });
+    </script>
+</body>
+</html>

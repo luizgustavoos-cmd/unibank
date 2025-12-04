@@ -1,41 +1,90 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <title>Login</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/usuarios/css/login.css">
+  <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="{% static 'usuarios/css/login.css' %}">
 </head>
 
 <body>
 
-    <form action="{% url 'login' %}" method="POST">{% csrf_token %}
+{% if messages %}
+    <div class="mensagens-container">
+        {% for message in messages %}
+            <!-- O .tags do Django será 'success', 'error', 'warning', etc. -->
+            <div class="mensagem-popup {{ message.tags }}" onclick="this.classList.add('hidden')">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-        <h2 class="titulo-login">Uni Bank</h2>
 
-        <input type="text" placeholder="Username..." name="username" />
+  <form action="{% url 'login' %}" method="POST">{% csrf_token %}
 
-        <div class="input-senha-container">
-            <input id="senha" type="password" placeholder="Senha..." name="senha">
-            <span class="ver-senha" onclick="toggleSenha()">👁</span>
-        </div>
+    <h2 class="titulo-login">Uni Bank</h2>
 
-        <button type="submit">Logar</button>
+            {{ form.username }}
+        {% for error in form.username.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
 
-        <p class="cadastro-texto">
-            Ainda não tem uma conta?
-            <a href="{% url 'cadastro' %}">Cadastre-se</a>
-        </p>
+            <div class="input-senha-container">
+                  {{ form.password }} 
+      <span class="ver-senha" onclick="toggleSenhaLogin()">👁</span>
+    </div>
+        {% for error in form.password.errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
+        
+        {% for error in form.non_field_errors %}
+            <p class="mensagem-erro">{{ error }}</p> 
+        {% endfor %}
 
-    </form>
+    <button type="submit">Logar</button>
 
-    <script>
-        function toggleSenha() {
-            let campo = document.getElementById("senha");
-            campo.type = campo.type === "password" ? "text" : "password";
-        }
-    </script>
+    <p class="cadastro-texto">
+      Ainda não tem uma conta?
+      <a href="{% url 'cadastro' %}">Cadastre-se</a>
+    </p>
+
+  </form>
+
+  <script>
+        // FUNÇÃO ATUALIZADA para usar o ID do input de login (senha_login)
+    function toggleSenhaLogin() {
+      let campo = document.getElementById("senha_login");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+        
+    // CÓDIGO: Gerenciamento de Mensagens Pop-up (Mantido)
+    document.addEventListener('DOMContentLoaded', () => {
+      const mensagens = document.querySelectorAll('.mensagem-popup');
+      
+      mensagens.forEach(mensagem => {
+        // 1. Auto-fechamento após 5 segundos
+        setTimeout(() => {
+          mensagem.style.opacity = '0'; 
+          
+          // Remove o elemento após a transição terminar (500ms)
+          setTimeout(() => {
+            mensagem.remove();
+          }, 500); 
+        }, 5000); // 5000ms = 5 segundos
+
+        // 2. Fechamento ao clicar na mensagem
+        mensagem.addEventListener('click', () => {
+          mensagem.style.opacity = '0';
+          setTimeout(() => {
+            mensagem.remove();
+          }, 500);
+        });
+      });
+    });
+  </script>
 
 </body>
 </html>

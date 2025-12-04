@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>cliente</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/home_page.css' %}">
+</head>
+<body>
+
+    
+{% if messages %}
+    <div class="mensagens-container">
+        {% for message in messages %}
+            <div class="mensagem-popup {{ message.tags }}" onclick="this.remove()"> 
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+    <h1>Bem-vindo à Tela cliente</h1>
+
+    <div class="top-right-container">
+            <a href="{% url 'logout' %}" class="btn-logout">Sair (Logout)</a>
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mensagens = document.querySelectorAll('.mensagem-popup');
+            
+            mensagens.forEach(mensagem => {
+                // 1. Auto-fechamento após 5 segundos
+                setTimeout(() => {
+                    mensagem.style.opacity = '0'; 
+                    
+                    // Remove o elemento após a transição terminar (500ms)
+                    setTimeout(() => {
+                        mensagem.remove();
+                    }, 500); 
+                }, 5000); // 5000ms = 5 segundos
+                
+                // 2. Fechamento ao clicar na mensagem (já definido com onclick="this.remove()" no HTML)
+            });
+        });
+    </script>
+</body>
+</html>
