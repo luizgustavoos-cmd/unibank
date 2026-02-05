@@ -16,8 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+
+def redirect_root(request):
+    if request.user.is_authenticated:
+        return redirect('home_page')
+    return redirect('login')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('usuarios.urls'))
+    path('auth/', include('usuarios.urls')),
+
+    path('', redirect_root, name='index'),
 ]

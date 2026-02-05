@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login as auth_login,update_session
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from .forms import LoginForm 
+from django.db import transaction
+from .models import Transacao
 from django.contrib.auth import logout
 
 
@@ -204,3 +206,40 @@ def adm_excluir_usuario(request, user_id):
     messages.error(request, "Acesso inválido.")
     return redirect('adm_inicio')
 
+def transferir(request):
+    if request.method == 'POST':
+        username_destinatario = request.POST.get('destinatario')
+        valor = float(request.POST.get('valor').replace(',', '.')) # Converte vírgula em ponto
+        
+        try:
+            destinatario = User.objects.get(username=username_destinatario)
+            remetente = request.user
+            
+            # Verificações de segurança
+            if remetente == destinatario:
+                messages.error(request, "Você não pode transferir para si mesmo.")
+            elif remetente.profile.saldo >= valor:
+                with transaction.atomic():
+                    # 1. Tira do remetente
+                    remetente.profile.saldo -= valor
+                    remetente.profile.save()
+                    
+                    # 2. Adiciona ao destinatário
+                    destinatario.profile.saldo += valor
+                    destinatario.profile.save()
+                    
+                    # 3. Registra a transação
+                    Transacao.objects.create(
+                        remetente=remetente,
+                        destinatario=destinatario,
+                        valor=valor
+                    )
+                messages.success(request, f"Transferência de R$ {valor:.2f} realizada com sucesso!")
+                return redirect('home_page')
+            else:
+                messages.error(request, "Saldo insuficiente.")
+                
+        except User.DoesNotExist:
+            messages.error(request, "Usuário destinatário não encontrado.")
+            
+    return render(request, 'transferir.html')
